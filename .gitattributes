@@ -1,0 +1,21 @@
+# Default: normalize line endings to LF on commit
+* text=auto eol=lf
+
+# Shell scripts: always LF
+.husky/* text eol=lf
+*.sh text eol=lf
+
+# Windows-specific files: keep CRLF
+*.bat text eol=crlf
+*.cmd text eol=crlf
+
+# Binary files: no conversion
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.glb binary
+*.gltf binary
+*.woff binary
+*.woff2 binary
