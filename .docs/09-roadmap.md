@@ -24,8 +24,8 @@ Bloco B — Versão autenticada (pós-MVP)
 - [x] Criar repositório no GitHub
 - [x] Configurar `.gitignore` inicial (node_modules, .env, dist, .next)
 - [x] Configurar Husky + Commitlint (commits convencionais desde o início)
-- [ ] Criar branch strategy (main, develop)
-- [ ] Instalar Docker Desktop (para fases futuras — bancos ficam inativos por ora)
+- [x] Criar branch strategy (main, develop)
+- [x] Instalar Docker Desktop (para fases futuras — bancos ficam inativos por ora)
 
 **Entrega:** Repositório criado, hooks de qualidade rodando, branch strategy definida.
 
