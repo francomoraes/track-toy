@@ -4,8 +4,8 @@ const config = {
   singleQuote: true,
   printWidth: 100,
   tabWidth: 2,
-  trailingComma: "all",
-  arrowParens: "always",
+  trailingComma: 'all',
+  arrowParens: 'always',
 };
 
 export default config;

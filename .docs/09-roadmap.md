@@ -35,23 +35,21 @@ Bloco B — Versão autenticada (pós-MVP)
 
 **Objetivo:** Estrutura mínima compilando, com apenas os pacotes necessários para o MVP local.
 
-- [ ] Inicializar pnpm workspaces + Turborepo
-- [ ] Criar `packages/typescript-config` com tsconfig base
-- [ ] Criar `packages/eslint-config` com regras compartilhadas
-- [ ] Criar `packages/prettier-config`
-- [ ] Scaffold `packages/game-core` (Jest configurado, sem lógica ainda)
-- [ ] Scaffold `apps/web` com Next.js 15 (App Router, Tailwind, `pnpm dev` funciona)
-- [ ] Configurar Turbo pipeline (`build`, `dev`, `test`, `lint`)
+- [x] Inicializar pnpm workspaces + Turborepo
+- [x] Scaffold `frontend` com Next.js 15 (App Router, Tailwind, `pnpm dev` funciona)
+- [x] Configurações compartilhadas na raiz (TypeScript, ESLint, Prettier)
+- [x] Definir pasta `frontend/src/game-core` para lógica pura do jogo
+- [x] Configurar Turbo pipeline (`build`, `dev`, `test`, `lint`)
 
-> `packages/database` e `apps/api` ficam para o Bloco B.
+> `backend` e banco de dados ficam para o Bloco B.
 
-**Entrega:** `pnpm dev` sobe o Next.js, ESLint passando, Jest configurado.
+**Entrega:** `pnpm dev` sobe o Next.js e `pnpm lint` + `pnpm type-check` passam na raiz.
 
 ---
 
 ### Fase 2 — Game Core (lógica pura com TDD)
 
-**Objetivo:** Toda a lógica de jogo sem dependência de browser, React ou Three.js.
+**Objetivo:** Toda a lógica de jogo concentrada em `frontend/src/game-core`, sem dependência de browser, React ou Three.js.
 
 - [ ] Definir e fechar os tipos TypeScript: `LevelConfig`, `MechanismConfig`, `CommandBinding`, `GameEvent`, `Score`
 - [ ] Implementar máquina de estados de cada mecanismo com TDD:
@@ -66,7 +64,7 @@ Bloco B — Versão autenticada (pós-MVP)
 
 > `ConveyorRamp` e `HelicopterMagnet` (mecanismos de sincronização) ficam para o Bloco A fase 3 apenas se o MVP incluir mundo 2. Caso contrário, ficam para o Bloco B.
 
-**Entrega:** `pnpm test --filter game-core` passa com alta cobertura.
+**Entrega:** testes da pasta `frontend/src/game-core` passam com alta cobertura.
 
 ---
 
@@ -76,7 +74,7 @@ Bloco B — Versão autenticada (pós-MVP)
 
 #### Setup técnico
 
-- [ ] Instalar React Three Fiber + Drei + Rapier no `apps/web`
+- [ ] Instalar React Three Fiber + Drei + Rapier no `frontend`
 - [ ] Instalar Zustand
 - [ ] Configurar lazy loading da cena 3D (não bloquear SSR do Next.js)
 

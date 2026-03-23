@@ -51,7 +51,7 @@ importers:
         specifier: ^8.0.0
         version: 8.57.1(eslint@9.39.4(jiti@2.6.1))(typescript@5.9.3)
 
-  apps/web:
+  frontend:
     dependencies:
       next:
         specifier: ^15.0.0
@@ -81,8 +81,6 @@ importers:
       typescript:
         specifier: ^5.0.0
         version: 5.9.3
-
-  packages/game-core: {}
 
 packages:
 

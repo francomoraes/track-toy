@@ -1,9 +1,9 @@
-import type { Metadata } from "next";
-import "./globals.css";
+import type { Metadata } from 'next';
+import './globals.css';
 
 export const metadata: Metadata = {
-  title: "Track Toy",
-  description: "Montessori-inspired mechanical track game",
+  title: 'Track Toy',
+  description: 'Montessori-inspired mechanical track game',
 };
 
 export default function RootLayout({

@@ -31,8 +31,8 @@ jobs:
       - uses: pnpm/action-setup@v3
       - uses: actions/setup-node@v4
         with:
-          node-version: "20"
-          cache: "pnpm"
+          node-version: '20'
+          cache: 'pnpm'
       - run: pnpm install --frozen-lockfile
       - run: pnpm turbo lint type-check
 
@@ -43,8 +43,8 @@ jobs:
       - uses: pnpm/action-setup@v3
       - uses: actions/setup-node@v4
         with:
-          node-version: "20"
-          cache: "pnpm"
+          node-version: '20'
+          cache: 'pnpm'
       - run: pnpm install --frozen-lockfile
       - run: pnpm --filter game-core test --coverage
 
@@ -57,7 +57,7 @@ jobs:
           POSTGRES_USER: tracktoy
           POSTGRES_PASSWORD: tracktoy_test
           POSTGRES_DB: tracktoy_test
-        ports: ["5432:5432"]
+        ports: ['5432:5432']
         options: >-
           --health-cmd pg_isready
           --health-interval 10s
@@ -65,7 +65,7 @@ jobs:
           --health-retries 5
       mongo:
         image: mongo:7
-        ports: ["27017:27017"]
+        ports: ['27017:27017']
     env:
       DATABASE_URL: postgresql://tracktoy:tracktoy_test@localhost:5432/tracktoy_test
       MONGODB_URI: mongodb://localhost:27017/tracktoy_test
@@ -75,8 +75,8 @@ jobs:
       - uses: pnpm/action-setup@v3
       - uses: actions/setup-node@v4
         with:
-          node-version: "20"
-          cache: "pnpm"
+          node-version: '20'
+          cache: 'pnpm'
       - run: pnpm install --frozen-lockfile
       - run: pnpm --filter api run db:migrate # prisma migrate deploy
       - run: pnpm --filter api test --coverage
@@ -88,8 +88,8 @@ jobs:
       - uses: pnpm/action-setup@v3
       - uses: actions/setup-node@v4
         with:
-          node-version: "20"
-          cache: "pnpm"
+          node-version: '20'
+          cache: 'pnpm'
       - run: pnpm install --frozen-lockfile
       - run: pnpm --filter web test --coverage
 
@@ -103,8 +103,8 @@ jobs:
       - uses: pnpm/action-setup@v3
       - uses: actions/setup-node@v4
         with:
-          node-version: "20"
-          cache: "pnpm"
+          node-version: '20'
+          cache: 'pnpm'
       - run: pnpm install --frozen-lockfile
       - run: pnpm exec playwright install --with-deps chromium
       - run: pnpm --filter web build
@@ -124,7 +124,7 @@ jobs:
 
 | Serviço              | Plataforma    | Tier gratuito           |
 | -------------------- | ------------- | ----------------------- |
-| `apps/web` (Next.js) | Vercel        | ✅ Hobby gratuito       |
+| `frontend` (Next.js) | Vercel        | ✅ Hobby gratuito       |
 | `apps/api` (NestJS)  | Railway       | ✅ $5/mês               |
 | PostgreSQL           | Railway       | ✅ incluso              |
 | MongoDB              | MongoDB Atlas | ✅ 512MB gratuito       |

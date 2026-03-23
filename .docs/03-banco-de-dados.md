@@ -100,12 +100,12 @@ model GameProfile {
 ```typescript
 // apps/api/src/modules/game/schemas/level-progress.schema.ts
 
-import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
-import { Document } from "mongoose";
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Document } from 'mongoose';
 
 export type LevelProgressDocument = LevelProgress & Document;
 
-@Schema({ timestamps: true, collection: "level_progress" })
+@Schema({ timestamps: true, collection: 'level_progress' })
 export class LevelProgress {
   @Prop({ required: true, index: true })
   userId: string; // FK para o User do PostgreSQL
@@ -144,7 +144,7 @@ LevelProgressSchema.index({ userId: 1, levelId: 1 }, { unique: true });
 ### `GameSession` — sessão individual de jogo (replay / analytics)
 
 ```typescript
-@Schema({ timestamps: true, collection: "game_sessions" })
+@Schema({ timestamps: true, collection: 'game_sessions' })
 export class GameSession {
   @Prop({ required: true, index: true })
   userId: string; // null para jogadores anônimos (modo aberto)
@@ -152,8 +152,8 @@ export class GameSession {
   @Prop({ required: true })
   levelId: string;
 
-  @Prop({ required: true, enum: ["anonymous", "authenticated"] })
-  mode: "anonymous" | "authenticated";
+  @Prop({ required: true, enum: ['anonymous', 'authenticated'] })
+  mode: 'anonymous' | 'authenticated';
 
   @Prop({ default: false })
   completed: boolean;
@@ -178,7 +178,7 @@ export class GameSession {
 ### `LevelConfig` — configuração de fases (editável sem deploy)
 
 ```typescript
-@Schema({ collection: "level_configs" })
+@Schema({ collection: 'level_configs' })
 export class LevelConfig {
   @Prop({ required: true, unique: true })
   levelId: string;
@@ -200,7 +200,7 @@ export class LevelConfig {
 
   @Prop({ type: Object })
   educationalContent: {
-    concept: "colors" | "numbers" | "shapes" | "sequences";
+    concept: 'colors' | 'numbers' | 'shapes' | 'sequences';
     items: EducationalItem[];
   };
 

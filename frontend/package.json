@@ -1,5 +1,5 @@
 {
-  "name": "@track-toy/web",
+  "name": "@track-toy/frontend",
   "version": "0.0.0",
   "private": true,
   "scripts": {

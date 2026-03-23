@@ -62,7 +62,7 @@ O NestJS **valida** o resultado usando `game-core` antes de persistir:
 // Evita cheating: recalcula score server-side e compara
 const serverScore = calculateScore(events, levelConfig);
 if (Math.abs(serverScore - dto.score) > TOLERANCE) {
-  throw new BadRequestException("Score inválido");
+  throw new BadRequestException('Score inválido');
 }
 ```
 
@@ -93,7 +93,7 @@ if (Math.abs(serverScore - dto.score) > TOLERANCE) {
 Não é uma API REST — é uma abstração no frontend que espelha a interface da API real:
 
 ```typescript
-// apps/web/lib/storage/local-game-storage.ts
+// frontend/lib/storage/local-game-storage.ts
 
 export const localGameStorage = {
   getProgress: (): LevelProgress[] => { ... },
@@ -106,7 +106,7 @@ export const localGameStorage = {
 O frontend usa uma abstração `useGameStorage()` que, dependendo do estado de auth, usa a API REST ou o `localGameStorage`. Isso isola completamente a lógica do jogo de "onde estão meus dados".
 
 ```typescript
-// apps/web/hooks/useGameStorage.ts
+// frontend/hooks/useGameStorage.ts
 
 export function useGameStorage() {
   const { data: session } = useSession();
@@ -141,9 +141,7 @@ Erros de validação (400):
   "error": {
     "code": "VALIDATION_ERROR",
     "statusCode": 400,
-    "details": [
-      { "field": "score", "message": "score deve ser um número positivo" }
-    ]
+    "details": [{ "field": "score", "message": "score deve ser um número positivo" }]
   }
 }
 ```

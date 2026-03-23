@@ -87,7 +87,7 @@ Não completamente. Ver próxima seção.
 
 ## Stack Completa
 
-### Frontend (`apps/web`)
+### Frontend (`frontend`)
 
 | Tecnologia            | Versão-alvo | Motivo                                 |
 | --------------------- | ----------- | -------------------------------------- |
@@ -140,7 +140,7 @@ Browser
   │
   ▼
 ┌─────────────────────────────┐
-│  Next.js (apps/web)         │
+│  Next.js (frontend)         │
 │  ├─ Pages / App Router      │
 │  ├─ React Three Fiber (3D)  │
 │  ├─ API Routes (proxy/meta) │

@@ -2,153 +2,100 @@
 
 ## Direcao atual
 
-Para o MVP, a estrutura foi simplificada para manter apenas tres `package.json`:
+Para o MVP, a estrutura foi simplificada para ser facil de explicar e sustentar:
 
 - `package.json` na raiz, com scripts e tooling compartilhado
-- `apps/web/package.json`, com o app Next.js
-- `packages/game-core/package.json`, com a logica pura do jogo
+- `frontend/package.json`, com o app Next.js
+- logica de jogo em `frontend/src/game-core`
 
-Configuracoes compartilhadas de TypeScript, ESLint e Prettier ficam na raiz. Isso reduz atrito no inicio e evita criar pacotes de infraestrutura antes de existir necessidade real.
+Nao existe pacote separado para game-core nesta fase. Se no futuro houver necessidade real de compartilhamento com backend, essa extracao pode ser feita sem quebrar o frontend.
 
 ## Estrutura de Pastas
 
 ```
 track-toy/
-├── apps/
-│   └── web/
-│       ├── package.json
-│       ├── tsconfig.json
-│       ├── eslint.config.mjs
-│       ├── next.config.ts
-│       ├── postcss.config.mjs
-│       ├── next-env.d.ts
-│       └── src/
-│           ├── app/
-│           │   ├── layout.tsx
-│           │   ├── page.tsx
-│           │   └── globals.css
-│           ├── features/           # Fatias verticais por fluxo do jogo
-│           │   ├── onboarding/
-│           │   ├── phase-selection/
-│           │   ├── phase-runtime/
-│           │   ├── hud/
-│           │   └── progression/
-│           ├── entities/           # Modelos visuais e adaptadores de UI
-│           │   ├── car/
-│           │   ├── mechanism/
-│           │   └── phase/
-│           └── shared/
-│               ├── ui/
-│               ├── hooks/
-│               └── lib/
+├── frontend/
+│   ├── package.json
+│   ├── tsconfig.json
+│   ├── eslint.config.mjs
+│   ├── next.config.ts
+│   ├── postcss.config.mjs
+│   ├── next-env.d.ts
+│   └── src/
+│       ├── app/
+│       │   ├── layout.tsx
+│       │   ├── page.tsx
+│       │   └── globals.css
+│       ├── components/
+│       │   ├── game/
+│       │   └── ui/
+│       ├── game-core/
+│       │   ├── types/
+│       │   ├── mechanisms/
+│       │   ├── rules/
+│       │   ├── phases/
+│       │   └── index.ts
+│       ├── services/
+│       │   ├── storage/
+│       │   └── api/
+│       └── store/
 │
-├── packages/
-│   └── game-core/
-│       ├── package.json
-│       ├── tsconfig.json
-│       ├── jest.config.js
-│       └── src/
-│           ├── phases/             # Regras especificas de cada fase
-│           │   ├── phase-01-elevator/
-│           │   ├── phase-02-drawbridge/
-│           │   └── phase-03-mini-cycle/
-│           ├── mechanisms/         # Comportamentos mecanicos reutilizaveis
-│           │   ├── elevator/
-│           │   ├── drawbridge/
-│           │   ├── conveyor/
-│           │   └── magnet/
-│           ├── entities/
-│           │   └── car/
-│           └── rules/
-│               └── progression/
-│
+├── backend/                       # reservado para Bloco B (futuro)
 ├── .docs/
 ├── .husky/
-├── eslint.config.mjs               # Config compartilhada na raiz
-├── prettier.config.mjs             # Config compartilhada na raiz
-├── tsconfig.base.json              # Base compartilhada
-├── tsconfig.nextjs.json            # Preset para o app web
-├── tsconfig.library.json           # Preset para bibliotecas
+├── eslint.config.mjs              # Config compartilhada na raiz
+├── prettier.config.mjs            # Config compartilhada na raiz
+├── tsconfig.base.json             # Base compartilhada
+├── tsconfig.nextjs.json           # Preset para o frontend
+├── tsconfig.library.json          # Preset para bibliotecas
 ├── turbo.json
 ├── pnpm-workspace.yaml
 ├── package.json
 └── .gitignore
 ```
 
----
-
 ## Convencoes de organizacao
 
-- O monorepo continua existindo, mas so com os pacotes que carregam codigo de produto.
-- O crescimento inicial deve seguir vertical slicing, nao pastas horizontais genericas.
-- Qualquer extracao de novo pacote precisa ser justificada por reuso real ou isolamento tecnico claro.
+- Monorepo continua existindo, mas com estrutura orientada por produto (`frontend` / `backend`).
+- Regras de jogo ficam em `frontend/src/game-core`.
+- Integracoes externas (API, storage, auth) ficam em `frontend/src/services`.
+- UI e renderizacao ficam em `frontend/src/components`.
+- Extrair pacote compartilhado so quando existir necessidade real comprovada.
 
 ## Convencoes de Nomenclatura
 
-| Artefato              | Padrão                                         |
+| Artefato              | Padrao                                         |
 | --------------------- | ---------------------------------------------- |
 | Componentes React     | `PascalCase.tsx`                               |
 | Hooks                 | `useXxx.ts`                                    |
 | Stores Zustand        | `useXxxStore.ts`                               |
-| Serviços NestJS       | `xxx.service.ts`                               |
+| Servicos NestJS       | `xxx.service.ts`                               |
 | DTOs                  | `create-xxx.dto.ts`, `update-xxx.dto.ts`       |
 | Schemas Mongoose      | `xxx.schema.ts`                                |
 | Arquivos de teste     | `xxx.spec.ts` (unit) / `xxx.e2e-spec.ts` (e2e) |
-| Variáveis de ambiente | `SCREAMING_SNAKE_CASE`                         |
-
----
+| Variaveis de ambiente | `SCREAMING_SNAKE_CASE`                         |
 
 ## `pnpm-workspace.yaml`
 
 ```yaml
 packages:
-  - "apps/*"
-  - "packages/*"
+  - 'frontend'
 ```
 
-## `turbo.json` (rascunho)
+## `game-core` — por que manter dentro do frontend agora?
 
-```json
-{
-  "$schema": "https://turbo.build/schema.json",
-  "tasks": {
-    "build": {
-      "dependsOn": ["^build"],
-      "outputs": [".next/**", "dist/**"]
-    },
-    "dev": {
-      "cache": false,
-      "persistent": true
-    },
-    "test": {
-      "dependsOn": ["^build"]
-    },
-    "lint": {},
-    "type-check": {
-      "dependsOn": ["^build"]
-    }
-  }
-}
-```
-
----
-
-## `game-core` — por que separar?
-
-Este pacote contem a logica pura do jogo:
-
-- Sem dependências de browser, React ou Three.js
-- Testável de forma isolada com Jest puro
-- Pode ser usado tanto pelo frontend (execução) quanto pelo backend (validação server-side de resultados)
-- Evita que um jogador faça requests fraudulentos de "completei a fase com 100%"
+- Mantem a explicacao simples para o MVP
+- Evita custo estrutural prematuro
+- Permite TDD de logica pura sem browser, React ou Three.js
+- Facilita migracao futura para pacote compartilhado, se necessario
 
 Exemplo de responsabilidades:
 
 ```
-game-core/src/mechanisms/elevator/
+frontend/src/game-core/mechanisms/elevator/
   applyElevatorStep(state: ElevatorState, input: HoldInput): ElevatorState
 
-game-core/src/phases/phase-01-elevator/
+frontend/src/game-core/phases/phase-01-elevator.ts
   createPhase01(): PhaseDefinition
   validatePhase01Completion(state: Phase01State): boolean
 ```

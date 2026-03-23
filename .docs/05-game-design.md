@@ -216,7 +216,7 @@ GameScene (R3F)
 
 ```typescript
 interface GameState {
-  phase: "idle" | "running" | "blocked" | "success" | "fail";
+  phase: 'idle' | 'running' | 'blocked' | 'success' | 'fail';
   currentLevelId: string;
   elapsedMs: number;
   stars: number;
@@ -250,18 +250,18 @@ interface GameState {
 
 ```typescript
 export type MechanismType =
-  | "elevator_platform"
-  | "rotary_platform"
-  | "conveyor_ramp"
-  | "helicopter_magnet"
-  | "drawbridge"
-  | "crane_lift";
+  | 'elevator_platform'
+  | 'rotary_platform'
+  | 'conveyor_ramp'
+  | 'helicopter_magnet'
+  | 'drawbridge'
+  | 'crane_lift';
 
 // Hold-to-act: todas as acoes sao continuas enquanto o comando esta ativo
 export interface CommandBinding {
   commandId: string; // ex: cmd-1 ... cmd-6
   mechanismId: string;
-  action: "raise" | "lower" | "rotate_cw" | "rotate_ccw" | "enable_magnet";
+  action: 'raise' | 'lower' | 'rotate_cw' | 'rotate_ccw' | 'enable_magnet';
   // nao existe 'toggle': o estado do mecanismo depende de quanto tempo o botao fica pressionado
 }
 
@@ -281,13 +281,13 @@ export interface LevelConfig {
 
 export interface GameEvent {
   type:
-    | "command_triggered"
-    | "mechanism_state_changed"
-    | "car_blocked"
-    | "car_released"
-    | "magnet_attached"
-    | "magnet_detached"
-    | "cycle_completed";
+    | 'command_triggered'
+    | 'mechanism_state_changed'
+    | 'car_blocked'
+    | 'car_released'
+    | 'magnet_attached'
+    | 'magnet_detached'
+    | 'cycle_completed';
   timestamp: number;
   data: Record<string, unknown>;
 }

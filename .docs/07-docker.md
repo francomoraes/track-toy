@@ -23,7 +23,7 @@ docker-compose.yml
 ## `docker/docker-compose.yml`
 
 ```yaml
-version: "3.9"
+version: '3.9'
 
 services:
   postgres:
@@ -35,12 +35,12 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-tracktoy_dev}
       POSTGRES_DB: ${POSTGRES_DB:-tracktoy}
     ports:
-      - "5432:5432"
+      - '5432:5432'
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - ./postgres/init.sql:/docker-entrypoint-initdb.d/init.sql
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U tracktoy"]
+      test: ['CMD-SHELL', 'pg_isready -U tracktoy']
       interval: 10s
       timeout: 5s
       retries: 5
@@ -54,7 +54,7 @@ services:
       MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASSWORD:-tracktoy_dev}
       MONGO_INITDB_DATABASE: tracktoy
     ports:
-      - "27017:27017"
+      - '27017:27017'
     volumes:
       - mongo_data:/data/db
     healthcheck:
@@ -68,11 +68,11 @@ services:
     container_name: tracktoy-redis
     restart: unless-stopped
     ports:
-      - "6379:6379"
+      - '6379:6379'
     volumes:
       - redis_data:/data
     healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
+      test: ['CMD', 'redis-cli', 'ping']
       interval: 10s
       timeout: 3s
       retries: 5
@@ -82,7 +82,7 @@ services:
     container_name: tracktoy-mongo-ui
     restart: unless-stopped
     ports:
-      - "8081:8081"
+      - '8081:8081'
     environment:
       ME_CONFIG_MONGODB_ADMINUSERNAME: ${MONGO_USER:-tracktoy}
       ME_CONFIG_MONGODB_ADMINPASSWORD: ${MONGO_PASSWORD:-tracktoy_dev}
@@ -111,7 +111,7 @@ networks:
 ```yaml
 # Sobe apenas os bancos + serviços de infra
 # O app (web e api) roda fora do Docker para hot reload mais rápido
-version: "3.9"
+version: '3.9'
 
 services:
   postgres:
