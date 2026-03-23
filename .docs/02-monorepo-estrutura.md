@@ -85,16 +85,16 @@ track-toy/
 
 ## Convencoes de Nomenclatura
 
-| Artefato | Padrão |
-|---|---|
-| Componentes React | `PascalCase.tsx` |
-| Hooks | `useXxx.ts` |
-| Stores Zustand | `useXxxStore.ts` |
-| Serviços NestJS | `xxx.service.ts` |
-| DTOs | `create-xxx.dto.ts`, `update-xxx.dto.ts` |
-| Schemas Mongoose | `xxx.schema.ts` |
-| Arquivos de teste | `xxx.spec.ts` (unit) / `xxx.e2e-spec.ts` (e2e) |
-| Variáveis de ambiente | `SCREAMING_SNAKE_CASE` |
+| Artefato              | Padrão                                         |
+| --------------------- | ---------------------------------------------- |
+| Componentes React     | `PascalCase.tsx`                               |
+| Hooks                 | `useXxx.ts`                                    |
+| Stores Zustand        | `useXxxStore.ts`                               |
+| Serviços NestJS       | `xxx.service.ts`                               |
+| DTOs                  | `create-xxx.dto.ts`, `update-xxx.dto.ts`       |
+| Schemas Mongoose      | `xxx.schema.ts`                                |
+| Arquivos de teste     | `xxx.spec.ts` (unit) / `xxx.e2e-spec.ts` (e2e) |
+| Variáveis de ambiente | `SCREAMING_SNAKE_CASE`                         |
 
 ---
 
@@ -136,12 +136,14 @@ packages:
 ## `game-core` — por que separar?
 
 Este pacote contem a logica pura do jogo:
+
 - Sem dependências de browser, React ou Three.js
 - Testável de forma isolada com Jest puro
 - Pode ser usado tanto pelo frontend (execução) quanto pelo backend (validação server-side de resultados)
 - Evita que um jogador faça requests fraudulentos de "completei a fase com 100%"
 
 Exemplo de responsabilidades:
+
 ```
 game-core/src/mechanisms/elevator/
   applyElevatorStep(state: ElevatorState, input: HoldInput): ElevatorState

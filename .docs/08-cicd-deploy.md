@@ -2,12 +2,12 @@
 
 ## Estratégia de Branches
 
-| Branch | Propósito | Deploy automático |
-|---|---|---|
-| `main` | Produção | ✅ → Produção |
-| `develop` | Integração contínua | ✅ → Preview/Staging |
+| Branch      | Propósito            | Deploy automático         |
+| ----------- | -------------------- | ------------------------- |
+| `main`      | Produção             | ✅ → Produção             |
+| `develop`   | Integração contínua  | ✅ → Preview/Staging      |
 | `feature/*` | Features individuais | ✅ → Preview URL (Vercel) |
-| `fix/*` | Bugfixes | ✅ → Preview URL |
+| `fix/*`     | Bugfixes             | ✅ → Preview URL          |
 
 ---
 
@@ -31,8 +31,8 @@ jobs:
       - uses: pnpm/action-setup@v3
       - uses: actions/setup-node@v4
         with:
-          node-version: '20'
-          cache: 'pnpm'
+          node-version: "20"
+          cache: "pnpm"
       - run: pnpm install --frozen-lockfile
       - run: pnpm turbo lint type-check
 
@@ -43,8 +43,8 @@ jobs:
       - uses: pnpm/action-setup@v3
       - uses: actions/setup-node@v4
         with:
-          node-version: '20'
-          cache: 'pnpm'
+          node-version: "20"
+          cache: "pnpm"
       - run: pnpm install --frozen-lockfile
       - run: pnpm --filter game-core test --coverage
 
@@ -57,7 +57,7 @@ jobs:
           POSTGRES_USER: tracktoy
           POSTGRES_PASSWORD: tracktoy_test
           POSTGRES_DB: tracktoy_test
-        ports: ['5432:5432']
+        ports: ["5432:5432"]
         options: >-
           --health-cmd pg_isready
           --health-interval 10s
@@ -65,7 +65,7 @@ jobs:
           --health-retries 5
       mongo:
         image: mongo:7
-        ports: ['27017:27017']
+        ports: ["27017:27017"]
     env:
       DATABASE_URL: postgresql://tracktoy:tracktoy_test@localhost:5432/tracktoy_test
       MONGODB_URI: mongodb://localhost:27017/tracktoy_test
@@ -75,10 +75,10 @@ jobs:
       - uses: pnpm/action-setup@v3
       - uses: actions/setup-node@v4
         with:
-          node-version: '20'
-          cache: 'pnpm'
+          node-version: "20"
+          cache: "pnpm"
       - run: pnpm install --frozen-lockfile
-      - run: pnpm --filter api run db:migrate  # prisma migrate deploy
+      - run: pnpm --filter api run db:migrate # prisma migrate deploy
       - run: pnpm --filter api test --coverage
 
   test-web:
@@ -88,14 +88,14 @@ jobs:
       - uses: pnpm/action-setup@v3
       - uses: actions/setup-node@v4
         with:
-          node-version: '20'
-          cache: 'pnpm'
+          node-version: "20"
+          cache: "pnpm"
       - run: pnpm install --frozen-lockfile
       - run: pnpm --filter web test --coverage
 
   e2e:
     runs-on: ubuntu-latest
-    needs: [test-api, test-web]  # só roda após unit tests passarem
+    needs: [test-api, test-web] # só roda após unit tests passarem
     services:
       # mesmos services do test-api
     steps:
@@ -103,13 +103,13 @@ jobs:
       - uses: pnpm/action-setup@v3
       - uses: actions/setup-node@v4
         with:
-          node-version: '20'
-          cache: 'pnpm'
+          node-version: "20"
+          cache: "pnpm"
       - run: pnpm install --frozen-lockfile
       - run: pnpm exec playwright install --with-deps chromium
       - run: pnpm --filter web build
       - run: pnpm --filter api build
-      - run: pnpm e2e  # roda playwright
+      - run: pnpm e2e # roda playwright
         env:
           # variáveis de ambiente de teste
 ```
@@ -122,25 +122,27 @@ jobs:
 
 **Menor custo de setup, ideal para portfólio:**
 
-| Serviço | Plataforma | Tier gratuito |
-|---|---|---|
-| `apps/web` (Next.js) | Vercel | ✅ Hobby gratuito |
-| `apps/api` (NestJS) | Railway | ✅ $5/mês |
-| PostgreSQL | Railway | ✅ incluso |
-| MongoDB | MongoDB Atlas | ✅ 512MB gratuito |
-| Redis | Upstash | ✅ 10k req/dia gratuito |
+| Serviço              | Plataforma    | Tier gratuito           |
+| -------------------- | ------------- | ----------------------- |
+| `apps/web` (Next.js) | Vercel        | ✅ Hobby gratuito       |
+| `apps/api` (NestJS)  | Railway       | ✅ $5/mês               |
+| PostgreSQL           | Railway       | ✅ incluso              |
+| MongoDB              | MongoDB Atlas | ✅ 512MB gratuito       |
+| Redis                | Upstash       | ✅ 10k req/dia gratuito |
 
 **Vantagens:** Deploy automático no push, zero config de infraestrutura, SSL automático.
 
 ### Opção B: VPS (Hetzner / DigitalOcean) com Docker
 
 Para o estudo de infra/DevOps:
+
 - Um VPS com Docker Compose
 - Nginx como reverse proxy
 - Certbot para SSL
 - GitHub Actions faz deploy via SSH
 
 ### Recomendação para portfólio
+
 **Comece com Opção A** (Railway + Vercel). É o menor tempo até ter algo online e funcionando. Se quiser estudar o lado de infra, adicione a Opção B depois.
 
 ---
@@ -175,11 +177,13 @@ jobs:
 ## Variáveis de Ambiente em Produção
 
 **Nunca commitar segredos.** Usar:
+
 - **Vercel**: Dashboard → Settings → Environment Variables
 - **Railway**: Dashboard → Variables
 - **GitHub Actions**: Settings → Secrets and variables → Actions
 
 Variáveis necessárias em produção:
+
 ```
 DATABASE_URL              (Railway injetado automaticamente)
 MONGODB_URI               (MongoDB Atlas connection string)
@@ -205,7 +209,7 @@ Prisma migrations rodam como parte do deploy do NestJS:
     "build": "nest build",
     "start:prod": "node dist/main",
     "db:migrate": "prisma migrate deploy",
-    "prestart:prod": "prisma migrate deploy"  // roda antes de subir o servidor
+    "prestart:prod": "prisma migrate deploy" // roda antes de subir o servidor
   }
 }
 ```

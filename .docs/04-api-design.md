@@ -12,13 +12,13 @@
 
 ## Auth (`/api/v1/auth`)
 
-| Método | Rota | Auth | Descrição |
-|---|---|---|---|
-| `POST` | `/auth/register` | ❌ | Cadastro com email/senha |
-| `POST` | `/auth/login` | ❌ | Login, retorna JWT |
-| `POST` | `/auth/refresh` | ❌ | Refresh do token |
-| `POST` | `/auth/logout` | ✅ | Invalida sessão |
-| `GET` | `/auth/me` | ✅ | Dados do usuário autenticado |
+| Método | Rota             | Auth | Descrição                    |
+| ------ | ---------------- | ---- | ---------------------------- |
+| `POST` | `/auth/register` | ❌   | Cadastro com email/senha     |
+| `POST` | `/auth/login`    | ❌   | Login, retorna JWT           |
+| `POST` | `/auth/refresh`  | ❌   | Refresh do token             |
+| `POST` | `/auth/logout`   | ✅   | Invalida sessão              |
+| `GET`  | `/auth/me`       | ✅   | Dados do usuário autenticado |
 
 **Nota:** O fluxo OAuth (Google, GitHub) é tratado pelo NextAuth no frontend. O NestJS recebe o JWT gerado pelo NextAuth e valida pela chave pública.
 
@@ -26,22 +26,22 @@
 
 ## Users (`/api/v1/users`)
 
-| Método | Rota | Auth | Descrição |
-|---|---|---|---|
-| `GET` | `/users/profile` | ✅ | Perfil + stats do usuário |
-| `PATCH` | `/users/profile` | ✅ | Atualiza nome, avatar |
-| `DELETE` | `/users/account` | ✅ | Deleta conta (LGPD) |
+| Método   | Rota             | Auth | Descrição                 |
+| -------- | ---------------- | ---- | ------------------------- |
+| `GET`    | `/users/profile` | ✅   | Perfil + stats do usuário |
+| `PATCH`  | `/users/profile` | ✅   | Atualiza nome, avatar     |
+| `DELETE` | `/users/account` | ✅   | Deleta conta (LGPD)       |
 
 ---
 
 ## Game Progress (`/api/v1/game`)
 
-| Método | Rota | Auth | Descrição |
-|---|---|---|---|
-| `GET` | `/game/progress` | ✅ | Progresso em todas as fases |
-| `GET` | `/game/progress/:levelId` | ✅ | Progresso em uma fase específica |
-| `POST` | `/game/sessions` | ✅ | Registra resultado de uma sessão |
-| `GET` | `/game/sessions` | ✅ | Histórico de sessões (paginado) |
+| Método | Rota                      | Auth | Descrição                        |
+| ------ | ------------------------- | ---- | -------------------------------- |
+| `GET`  | `/game/progress`          | ✅   | Progresso em todas as fases      |
+| `GET`  | `/game/progress/:levelId` | ✅   | Progresso em uma fase específica |
+| `POST` | `/game/sessions`          | ✅   | Registra resultado de uma sessão |
+| `GET`  | `/game/sessions`          | ✅   | Histórico de sessões (paginado)  |
 
 ### `POST /game/sessions` — Body
 
@@ -57,11 +57,12 @@
 ```
 
 O NestJS **valida** o resultado usando `game-core` antes de persistir:
+
 ```typescript
 // Evita cheating: recalcula score server-side e compara
 const serverScore = calculateScore(events, levelConfig);
 if (Math.abs(serverScore - dto.score) > TOLERANCE) {
-  throw new BadRequestException('Score inválido');
+  throw new BadRequestException("Score inválido");
 }
 ```
 
@@ -69,21 +70,21 @@ if (Math.abs(serverScore - dto.score) > TOLERANCE) {
 
 ## Levels (`/api/v1/levels`)
 
-| Método | Rota | Auth | Descrição |
-|---|---|---|---|
-| `GET` | `/levels` | ❌ | Lista todas as fases ativas (sem layout detalhado) |
-| `GET` | `/levels/:levelId` | ❌ | Config completa de uma fase |
-| `GET` | `/levels/:levelId/leaderboard` | ❌ | Top 10 da fase |
+| Método | Rota                           | Auth | Descrição                                          |
+| ------ | ------------------------------ | ---- | -------------------------------------------------- |
+| `GET`  | `/levels`                      | ❌   | Lista todas as fases ativas (sem layout detalhado) |
+| `GET`  | `/levels/:levelId`             | ❌   | Config completa de uma fase                        |
+| `GET`  | `/levels/:levelId/leaderboard` | ❌   | Top 10 da fase                                     |
 
 ---
 
 ## Ranking (`/api/v1/ranking`)
 
-| Método | Rota | Auth | Descrição |
-|---|---|---|---|
-| `GET` | `/ranking/global` | ❌ | Ranking global por pontuação total |
-| `GET` | `/ranking/weekly` | ❌ | Ranking da semana |
-| `GET` | `/ranking/me` | ✅ | Posição do usuário autenticado |
+| Método | Rota              | Auth | Descrição                          |
+| ------ | ----------------- | ---- | ---------------------------------- |
+| `GET`  | `/ranking/global` | ❌   | Ranking global por pontuação total |
+| `GET`  | `/ranking/weekly` | ❌   | Ranking da semana                  |
+| `GET`  | `/ranking/me`     | ✅   | Posição do usuário autenticado     |
 
 ---
 
@@ -113,7 +114,7 @@ export function useGameStorage() {
   if (session?.user) {
     return remoteGameStorage; // usa fetch para NestJS
   }
-  return localGameStorage;  // usa localStorage
+  return localGameStorage; // usa localStorage
 }
 ```
 
@@ -134,6 +135,7 @@ O NestJS expõe um `GlobalExceptionFilter` que padroniza todas as respostas de e
 ```
 
 Erros de validação (400):
+
 ```json
 {
   "error": {

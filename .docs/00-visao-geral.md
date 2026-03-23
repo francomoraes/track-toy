@@ -15,9 +15,9 @@
 
 ## Modos de Uso
 
-| Modo | Auth | Persistência | Funcionalidades |
-|------|------|-------------|-----------------|
-| **Aberto** | Não | `localStorage` | Jogar, salvar progresso local, ver fases |
+| Modo            | Auth                | Persistência   | Funcionalidades                                                     |
+| --------------- | ------------------- | -------------- | ------------------------------------------------------------------- |
+| **Aberto**      | Não                 | `localStorage` | Jogar, salvar progresso local, ver fases                            |
 | **Autenticado** | Sim (OAuth / Email) | Banco de dados | Sincronização em nuvem, histórico, ranking, save entre dispositivos |
 
 ---
@@ -28,6 +28,7 @@ O jogador controla um carrinho numa pista 3D isométrica/top-down.
 Cada fase introduz um conceito educativo (cores, números, formas geométricas, sequências lógicas) e um nível de dificuldade mecânico (velocidade, obstáculos, bifurcações).
 
 ### Pilares de Design
+
 1. **Acessibilidade**: funciona no browser, sem instalação
 2. **Progressividade**: onboarding suave, curva de aprendizado clara
 3. **Feedback visual rico**: 3D com física leve, efeitos de partículas

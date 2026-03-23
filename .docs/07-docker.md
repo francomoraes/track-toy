@@ -23,7 +23,7 @@ docker-compose.yml
 ## `docker/docker-compose.yml`
 
 ```yaml
-version: '3.9'
+version: "3.9"
 
 services:
   postgres:
@@ -92,7 +92,7 @@ services:
       mongo:
         condition: service_healthy
     profiles:
-      - tools  # só sobe com: docker compose --profile tools up
+      - tools # só sobe com: docker compose --profile tools up
 
 volumes:
   postgres_data:
@@ -111,7 +111,7 @@ networks:
 ```yaml
 # Sobe apenas os bancos + serviços de infra
 # O app (web e api) roda fora do Docker para hot reload mais rápido
-version: '3.9'
+version: "3.9"
 
 services:
   postgres:

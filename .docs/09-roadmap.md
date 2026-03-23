@@ -75,11 +75,13 @@ Bloco B — Versão autenticada (pós-MVP)
 **Objetivo:** As 3 primeiras fases jogáveis no browser, salvas em localStorage.
 
 #### Setup técnico
+
 - [ ] Instalar React Three Fiber + Drei + Rapier no `apps/web`
 - [ ] Instalar Zustand
 - [ ] Configurar lazy loading da cena 3D (não bloquear SSR do Next.js)
 
 #### Cena 3D
+
 - [ ] Componente `<GameScene>` com `<Canvas>` + física básica
 - [ ] Componente `<Car>` com movimento por gravidade simulado
 - [ ] Componente `<ElevatorPlatform>` — animação de subida/descida
@@ -90,11 +92,13 @@ Bloco B — Versão autenticada (pós-MVP)
 - [ ] Iluminação básica (ambient + directional)
 
 #### Estado e lógica
+
 - [ ] Zustand store: `useGameStore` (ver tipos em 05-game-design.md)
 - [ ] Hook `useGameStorage` (localStorage apenas, por ora)
 - [ ] Hook `useMechanismController` — conecta comandos do painel ao store
 
 #### Interface (HUD)
+
 - [ ] `<CommandPanel>` — painel lateral direito com 6 slots
   - Mostrar apenas os controles ativos na fase atual
   - Atalhos de teclado 1–6
@@ -103,6 +107,7 @@ Bloco B — Versão autenticada (pós-MVP)
 - [ ] `<FeedbackLog>` — mensagens de feedback (acertou, errou, bloqueado)
 
 #### Telas
+
 - [ ] Tela inicial: cena 3D de fundo em loop + botões Jogar / Selecionar Fase / Como Funciona
 - [ ] Mapa de fases: grid com status (bloqueada, disponível, completa + estrelas)
 - [ ] Tela pré-fase: objetivo + destaque do primeiro mecanismo
@@ -110,6 +115,7 @@ Bloco B — Versão autenticada (pós-MVP)
 - [ ] Tela de falha: motivo + retry
 
 #### Dados
+
 - [ ] `useGameStorage` salva progresso em `localStorage` (estrelas, melhor tempo, tentativas por fase)
 
 **Entrega:** É possível abrir o browser, jogar as 3 fases e ver progresso salvo.
@@ -198,16 +204,16 @@ Bloco B — Versão autenticada (pós-MVP)
 
 ## Resumo
 
-| Fase | Bloco | Foco |
-|---|---|---|
-| 0 | A | Ferramentas e governança |
-| 1 | A | Scaffold monorepo (sem backend) |
-| 2 | A | Game Core com TDD |
-| 3 | A | Jogo 3D jogável + localStorage |
-| 4 | A | Polimento + deploy portfólio |
-| 5 | B | Backend + auth |
-| 6 | B | Sync de progresso autenticado |
-| 7 | B | Conteúdo + ranking |
-| 8 | B | Otimização + CI/CD |
+| Fase | Bloco | Foco                            |
+| ---- | ----- | ------------------------------- |
+| 0    | A     | Ferramentas e governança        |
+| 1    | A     | Scaffold monorepo (sem backend) |
+| 2    | A     | Game Core com TDD               |
+| 3    | A     | Jogo 3D jogável + localStorage  |
+| 4    | A     | Polimento + deploy portfólio    |
+| 5    | B     | Backend + auth                  |
+| 6    | B     | Sync de progresso autenticado   |
+| 7    | B     | Conteúdo + ranking              |
+| 8    | B     | Otimização + CI/CD              |
 
 **Checkpoint de portfólio:** entre Fase 4 e Fase 5.
