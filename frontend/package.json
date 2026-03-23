@@ -7,7 +7,10 @@
     "build": "next build",
     "start": "next start",
     "lint": "pnpm exec eslint .",
-    "type-check": "pnpm exec tsc --noEmit"
+    "type-check": "pnpm exec tsc --noEmit",
+    "test": "jest",
+    "test:coverage": "jest --coverage",
+    "test:watch": "jest --watch"
   },
   "dependencies": {
     "next": "^15.0.0",

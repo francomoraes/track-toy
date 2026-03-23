@@ -1,2 +1,1 @@
-// Phase definitions will be added in Phase 2.
-export {};
+export * from './phase-01-elevator';
