@@ -33,6 +33,27 @@ export interface CraneLiftState {
   isMoving: boolean;
 }
 
+// ── Car physics ──────────────────────────────────────────────────────────────
+
+export interface CarState {
+  position: number; // 0-100: progress along track from start to end
+  velocity: number; // units/tick, positive = forward, negative = backward
+  isGrounded: boolean; // true if on elevator or track
+  isCoupledToElevator: boolean; // true until the car is released at the top
+}
+
+export interface TrackConfig {
+  /** Inclination angle in degrees (0 = flat, 90 = vertical) */
+  inclinationDeg: number;
+  /** Total track length (position goes from 0 to 100 regardless) */
+  length: number;
+  /** Terminal velocity limit to maintain playability */
+  maxVelocity: number;
+}
+
+/** Physics constant: scales acceleration based on incline angle */
+export const GRAVITY_FACTOR = 1.5;
+
 // ── Level / config ───────────────────────────────────────────────────────────
 
 export type MechanismType = 'elevator' | 'rotary_platform' | 'drawbridge' | 'crane_lift';

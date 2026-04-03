@@ -1,11 +1,12 @@
 import { applyElevatorStep, createElevator } from '../mechanisms/elevator/elevator.machine';
+import { applyCarPhysicsStep, createCar } from '../mechanisms/car/car.physics';
 import { evaluateCarFlow, type PhaseStatus } from '../rules/evaluate-car-flow';
-import type { ElevatorState, GameEvent, HoldAction } from '../types';
+import type { ElevatorState, CarState, GameEvent, HoldAction, TrackConfig } from '../types';
 
 export interface Phase01ElevatorState {
   elevator: ElevatorState;
-  carPosition: number;
-  goalPosition: number;
+  car: CarState;
+  track: TrackConfig;
   tick: number;
   maxTicks: number;
   status: PhaseStatus;
@@ -15,6 +16,8 @@ export interface Phase01ElevatorState {
 interface CreatePhase01ElevatorOptions {
   minHeight?: number;
   maxHeight?: number;
+  inclinationDeg?: number;
+  maxVelocity?: number;
   maxTicks?: number;
 }
 
@@ -24,8 +27,12 @@ export function createPhase01Elevator(options: CreatePhase01ElevatorOptions = {}
 
   return {
     elevator: createElevator({ minHeight, maxHeight }),
-    carPosition: minHeight,
-    goalPosition: maxHeight,
+    car: createCar(0),
+    track: {
+      inclinationDeg: options.inclinationDeg ?? 30,
+      length: 100,
+      maxVelocity: options.maxVelocity ?? 5,
+    },
     tick: 0,
     maxTicks: options.maxTicks ?? 180,
     status: 'running',
@@ -42,14 +49,12 @@ export function stepPhase01Elevator(
   }
 
   const nextElevator = applyElevatorStep(state.elevator, action);
+  const nextCar = applyCarPhysicsStep(state.car, state.track, nextElevator.position, state.elevator.maxHeight);
   const nextTick = state.tick + 1;
 
-  // In phase 1 the car is coupled to the elevator platform.
-  const nextCarPosition = nextElevator.position;
-
   const flow = evaluateCarFlow({
-    carPosition: nextCarPosition,
-    goalPosition: state.goalPosition,
+    carPosition: nextCar.position,
+    goalPosition: 100,
     tick: nextTick,
     maxTicks: state.maxTicks,
     mechanismId: 'elevator',
@@ -58,7 +63,7 @@ export function stepPhase01Elevator(
   return {
     ...state,
     elevator: nextElevator,
-    carPosition: nextCarPosition,
+    car: nextCar,
     tick: nextTick,
     status: flow.status,
     events: flow.event ? [...state.events, flow.event] : state.events,
