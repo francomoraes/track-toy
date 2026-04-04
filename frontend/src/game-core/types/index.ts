@@ -15,6 +15,12 @@ export interface ElevatorState {
   isMoving: boolean;
 }
 
+export type SwitchDirection = 'main' | 'alternate';
+
+export interface SwitchState {
+  direction: SwitchDirection;
+}
+
 export interface RotaryState {
   angleDeg: number; // 0 | 90 | 180 | 270
   isLocked: boolean; // true when aligned (snapped to 90° multiple)
