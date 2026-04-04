@@ -78,4 +78,51 @@ describe('buildPhase01SceneModel', () => {
     expect(scene.car.position[0]).toBeCloseTo(scene.track.end[0]);
     expect(scene.car.position[1]).toBeCloseTo(scene.track.end[1]);
   });
+
+  it('exit point equals the coupled car anchor when elevator is at max height', () => {
+    let phase = createPhase01Elevator({ maxHeight: 12, inclinationDeg: 30, maxVelocity: 5, maxTicks: 200 });
+
+    for (let tick = 0; tick < 12; tick += 1) {
+      phase = stepPhase01Elevator(phase, 'raise');
+    }
+
+    const scene = buildPhase01SceneModel(phase);
+    const expectedX = scene.elevator.position[0] + scene.elevator.carAnchorOffset[0];
+    const expectedY = scene.elevator.position[1] + scene.elevator.carAnchorOffset[1];
+
+    expect(scene.elevator.exitPoint[0]).toBeCloseTo(expectedX);
+    expect(scene.elevator.exitPoint[1]).toBeCloseTo(expectedY);
+  });
+
+  it('car position is continuous at the moment of decoupling', () => {
+    let phase = createPhase01Elevator({ maxHeight: 12, inclinationDeg: 30, maxVelocity: 5, maxTicks: 200 });
+
+    for (let tick = 0; tick < 12; tick += 1) {
+      phase = stepPhase01Elevator(phase, 'raise');
+    }
+
+    const coupledAtMax = { ...phase, car: { ...phase.car, isCoupledToElevator: true } };
+    const justReleased = { ...phase, car: { ...phase.car, position: 0, isCoupledToElevator: false } };
+
+    const sceneCoupled = buildPhase01SceneModel(coupledAtMax);
+    const sceneReleased = buildPhase01SceneModel(justReleased);
+
+    expect(sceneReleased.car.position[0]).toBeCloseTo(sceneCoupled.car.position[0]);
+    expect(sceneReleased.car.position[1]).toBeCloseTo(sceneCoupled.car.position[1]);
+  });
+
+  it('released car at trackProgress 0 starts exactly at upper track start', () => {
+    let phase = createPhase01Elevator({ maxHeight: 12, inclinationDeg: 30, maxVelocity: 5, maxTicks: 200 });
+
+    for (let tick = 0; tick < 12; tick += 1) {
+      phase = stepPhase01Elevator(phase, 'raise');
+    }
+
+    phase = { ...phase, car: { ...phase.car, position: 0, isCoupledToElevator: false } };
+
+    const scene = buildPhase01SceneModel(phase);
+
+    expect(scene.car.position[0]).toBeCloseTo(scene.upperTrack.start[0]);
+    expect(scene.car.position[1]).toBeCloseTo(scene.upperTrack.start[1]);
+  });
 });
