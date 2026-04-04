@@ -9,9 +9,10 @@ type PhaseHudProps = {
   onRaiseStart: () => void;
   onRaiseEnd: () => void;
   onReset: () => void;
+  onGoToMap: () => void;
 };
 
-export function PhaseHud({ phase, onRaiseStart, onRaiseEnd, onReset }: PhaseHudProps) {
+export function PhaseHud({ phase, onRaiseStart, onRaiseEnd, onReset, onGoToMap }: PhaseHudProps) {
   const hud = buildHudModel(phase);
 
   return (
@@ -48,6 +49,12 @@ export function PhaseHud({ phase, onRaiseStart, onRaiseEnd, onReset }: PhaseHudP
             onClick={onReset}
           >
             Reiniciar fase
+          </button>
+          <button
+            className="rounded-full border border-stone-300 bg-stone-100 px-6 py-3 text-sm font-semibold text-stone-700 transition hover:bg-stone-200"
+            onClick={onGoToMap}
+          >
+            ← Fases
           </button>
         </div>
       )}
