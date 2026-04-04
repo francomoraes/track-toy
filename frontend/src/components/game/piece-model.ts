@@ -18,13 +18,13 @@ export function buildPhase01PieceModel(scene: SceneModel) {
   return {
     car: {
       bodySize: [0.92, 0.36, 0.58] as const,
-      cabinOffset: [0.06, 0.26, 0] as Vec3,
+      cabinOffset: [-0.05, 0.3, 0] as Vec3,
       noseOffset: [0.36, 0.02, 0] as Vec3,
       wheels: [
-        [-0.2, -0.2, 0.24],
-        [-0.2, -0.2, -0.24],
-        [0.2, -0.2, 0.24],
-        [0.2, -0.2, -0.24],
+        [-0.2, 0, 0.24],
+        [-0.2, 0, -0.24],
+        [0.2, -0.24, 0.24],
+        [0.2, -0.24, -0.24],
       ] as Vec3[],
     },
     elevator: {
