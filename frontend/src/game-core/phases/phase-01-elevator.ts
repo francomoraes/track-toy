@@ -6,7 +6,7 @@ import type { ElevatorState, CarState, GameEvent, HoldAction, TrackConfig } from
 export interface Phase01ElevatorState {
   elevator: ElevatorState;
   car: CarState;
-  track: TrackConfig;
+  tracks: TrackConfig[];
   tick: number;
   maxTicks: number;
   status: PhaseStatus;
@@ -16,6 +16,9 @@ export interface Phase01ElevatorState {
 interface CreatePhase01ElevatorOptions {
   minHeight?: number;
   maxHeight?: number;
+  /** New: array of track segments. Takes priority over flat inclinationDeg/maxVelocity. */
+  tracks?: Array<{ inclinationDeg?: number; maxVelocity?: number }>;
+  /** Backward-compat single-track shorthand */
   inclinationDeg?: number;
   maxVelocity?: number;
   maxTicks?: number;
@@ -25,14 +28,17 @@ export function createPhase01Elevator(options: CreatePhase01ElevatorOptions = {}
   const minHeight = options.minHeight ?? 0;
   const maxHeight = options.maxHeight ?? 10;
 
+  const tracks: TrackConfig[] = options.tracks
+    ? options.tracks.map((t) => ({
+        inclinationDeg: t.inclinationDeg ?? 30,
+        maxVelocity: t.maxVelocity ?? 5,
+      }))
+    : [{ inclinationDeg: options.inclinationDeg ?? 30, maxVelocity: options.maxVelocity ?? 5 }];
+
   return {
     elevator: createElevator({ minHeight, maxHeight }),
     car: createCar(0),
-    track: {
-      inclinationDeg: options.inclinationDeg ?? 30,
-      length: 100,
-      maxVelocity: options.maxVelocity ?? 5,
-    },
+    tracks,
     tick: 0,
     maxTicks: options.maxTicks ?? 180,
     status: 'running',
@@ -49,7 +55,15 @@ export function stepPhase01Elevator(
   }
 
   const nextElevator = applyElevatorStep(state.elevator, action);
-  const nextCar = applyCarPhysicsStep(state.car, state.track, nextElevator.position, state.elevator.maxHeight);
+
+  const posPerTrack = 100 / state.tracks.length;
+  const trackIndex = Math.min(
+    Math.floor(state.car.position / posPerTrack),
+    state.tracks.length - 1,
+  );
+  const currentTrack = state.tracks[trackIndex];
+
+  const nextCar = applyCarPhysicsStep(state.car, currentTrack, nextElevator.position, state.elevator.maxHeight);
   const nextTick = state.tick + 1;
 
   const flow = evaluateCarFlow({

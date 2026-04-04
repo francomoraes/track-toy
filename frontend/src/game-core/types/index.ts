@@ -45,8 +45,6 @@ export interface CarState {
 export interface TrackConfig {
   /** Inclination angle in degrees (0 = flat, 90 = vertical) */
   inclinationDeg: number;
-  /** Total track length (position goes from 0 to 100 regardless) */
-  length: number;
   /** Terminal velocity limit to maintain playability */
   maxVelocity: number;
 }

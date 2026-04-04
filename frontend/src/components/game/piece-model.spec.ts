@@ -31,7 +31,7 @@ describe('buildPhase01PieceModel', () => {
     const pieces = buildPhase01PieceModel(scene);
 
     expect(pieces.lowerTrack.supports.length).toBeGreaterThanOrEqual(2);
-    expect(pieces.upperTrack.supports.length).toBeGreaterThanOrEqual(3);
-    expect(pieces.upperTrack.supports[0][1]).toBeLessThan(scene.upperTrack.center[1]);
+    expect(pieces.upperTracks[0].supports.length).toBeGreaterThanOrEqual(2);
+    expect(pieces.upperTracks[0].supports[0][1]).toBeLessThan(scene.upperTracks[0].center[1]);
   });
 });

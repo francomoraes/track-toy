@@ -4,10 +4,12 @@ import { createPhase01Elevator, stepPhase01Elevator, type HoldAction, type Phase
 
 const DEFAULT_PHASE_OPTIONS = {
   maxHeight: 12,
-  inclinationDeg: 30,
-  maxVelocity: 5,
+  tracks: [
+    { inclinationDeg: 30, maxVelocity: 5 },
+    { inclinationDeg: 15, maxVelocity: 5 },
+  ],
   maxTicks: 200,
-} as const;
+};
 
 function createInitialPhase(): Phase01ElevatorState {
   return createPhase01Elevator(DEFAULT_PHASE_OPTIONS);

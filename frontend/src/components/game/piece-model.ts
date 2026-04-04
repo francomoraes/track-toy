@@ -9,11 +9,14 @@ export function buildPhase01PieceModel(scene: SceneModel) {
     [scene.lowerTrack.center[0] + scene.lowerTrack.length * 0.22, scene.lowerTrack.center[1] - 0.7, 0],
   ];
 
-  const upperTrackSupports: Vec3[] = [
-    [scene.upperTrack.start[0] + 0.6, scene.upperTrack.start[1] - 2.2, 0],
-    [scene.upperTrack.center[0], scene.upperTrack.center[1] - 1.35, 0],
-    [scene.upperTrack.end[0] - 0.6, scene.upperTrack.end[1] - 1.4, 0],
-  ];
+  const upperTracks = scene.upperTracks.map((tr) => {
+    const supports: Vec3[] = [
+      [tr.start[0] + 0.6, tr.start[1] - 2.2, 0],
+      [tr.center[0], tr.center[1] - 1.35, 0],
+      [tr.end[0] - 0.6, tr.end[1] - 1.4, 0],
+    ];
+    return { deckHeight: 0.28, railOffsetZ: 0.5, supports };
+  });
 
   return {
     car: {
@@ -41,10 +44,6 @@ export function buildPhase01PieceModel(scene: SceneModel) {
       railOffsetZ: 0.42,
       supports: lowerTrackSupports,
     },
-    upperTrack: {
-      deckHeight: 0.28,
-      railOffsetZ: 0.5,
-      supports: upperTrackSupports,
-    },
+    upperTracks,
   };
 }

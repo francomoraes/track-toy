@@ -4,7 +4,6 @@ import type { CarState, TrackConfig } from '../../types';
 describe('Car Physics', () => {
   const defaultTrack: TrackConfig = {
     inclinationDeg: 30,
-    length: 100,
     maxVelocity: 5,
   };
 

@@ -59,4 +59,46 @@ describe('Phase 01 Elevator flow', () => {
     expect(state.car.position).toBeGreaterThan(releasedPosition);
     expect(state.car.isCoupledToElevator).toBe(false);
   });
+
+  it('applies physics from tracks[1] when car position is above the midpoint', () => {
+    let state = createPhase01Elevator({
+      maxHeight: 10,
+      tracks: [
+        { inclinationDeg: 30, maxVelocity: 20 },
+        { inclinationDeg: 10, maxVelocity: 20 },
+      ],
+      maxTicks: 500,
+    });
+
+    // Force car to position 51, already decoupled, velocity reset to 0
+    state = {
+      ...state,
+      car: { ...state.car, position: 51, velocity: 0, isCoupledToElevator: false },
+    };
+
+    state = stepPhase01Elevator(state, 'none');
+
+    // sin(10°) * GRAVITY_FACTOR ≈ 0.26; sin(30°) * 1.5 ≈ 0.75
+    expect(state.car.velocity).toBeGreaterThan(0.1);
+    expect(state.car.velocity).toBeLessThan(0.4);
+  });
+
+  it('car completes both tracks and reaches position 100 on a two-track phase', () => {
+    let state = createPhase01Elevator({
+      maxHeight: 10,
+      tracks: [
+        { inclinationDeg: 30, maxVelocity: 5 },
+        { inclinationDeg: 20, maxVelocity: 5 },
+      ],
+      maxTicks: 300,
+    });
+
+    for (let i = 0; i < 200; i++) {
+      state = stepPhase01Elevator(state, i < 10 ? 'raise' : 'none');
+      if (state.status !== 'running') break;
+    }
+
+    expect(state.status).toBe('success');
+    expect(state.car.position).toBe(100);
+  });
 });

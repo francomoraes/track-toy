@@ -45,8 +45,8 @@ function Phase01SceneContent() {
       <directionalLight intensity={1.4} position={[8, 10, 6]} />
       <SceneTicker />
 
-      <PerspectiveCamera makeDefault position={[4.5, 6, 10]} fov={42} />
-      <OrbitControls enablePan={false} maxDistance={14} maxPolarAngle={Math.PI / 2.05} minDistance={8} />
+      <PerspectiveCamera makeDefault position={[4.5, 5, 14]} fov={42} />
+      <OrbitControls enablePan={false} maxDistance={18} maxPolarAngle={Math.PI / 2.05} minDistance={8} />
 
       <group position={[0, -2, 0]}>
         <mesh position={[0, -0.6, 0]} receiveShadow rotation={[-Math.PI / 2, 0, 0]}>
@@ -98,27 +98,34 @@ function Phase01SceneContent() {
           </mesh>
         ))}
 
-        <mesh position={scene.upperTrack.center} rotation={scene.upperTrack.rotation}>
-          <boxGeometry args={[scene.upperTrack.length, pieces.upperTrack.deckHeight, 1.4]} />
-          <meshStandardMaterial color="#a98f68" />
-        </mesh>
+        {scene.upperTracks.map((upperTrack, trackIdx) => {
+          const trackPiece = pieces.upperTracks[trackIdx];
+          return (
+            <group key={`upper-track-${trackIdx}`}>
+              <mesh position={upperTrack.center} rotation={upperTrack.rotation}>
+                <boxGeometry args={[upperTrack.length, trackPiece.deckHeight, 1.4]} />
+                <meshStandardMaterial color="#a98f68" />
+              </mesh>
 
-        <mesh position={[scene.upperTrack.center[0], scene.upperTrack.center[1] + 0.1, pieces.upperTrack.railOffsetZ]} rotation={scene.upperTrack.rotation}>
-          <boxGeometry args={[scene.upperTrack.length, 0.08, 0.08]} />
-          <meshStandardMaterial color="#4b5563" />
-        </mesh>
+              <mesh position={[upperTrack.center[0], upperTrack.center[1] + 0.1, trackPiece.railOffsetZ]} rotation={upperTrack.rotation}>
+                <boxGeometry args={[upperTrack.length, 0.08, 0.08]} />
+                <meshStandardMaterial color="#4b5563" />
+              </mesh>
 
-        <mesh position={[scene.upperTrack.center[0], scene.upperTrack.center[1] + 0.1, -pieces.upperTrack.railOffsetZ]} rotation={scene.upperTrack.rotation}>
-          <boxGeometry args={[scene.upperTrack.length, 0.08, 0.08]} />
-          <meshStandardMaterial color="#4b5563" />
-        </mesh>
+              <mesh position={[upperTrack.center[0], upperTrack.center[1] + 0.1, -trackPiece.railOffsetZ]} rotation={upperTrack.rotation}>
+                <boxGeometry args={[upperTrack.length, 0.08, 0.08]} />
+                <meshStandardMaterial color="#4b5563" />
+              </mesh>
 
-        {pieces.upperTrack.supports.map((position, index) => (
-          <mesh key={`upper-support-${index}`} position={position}>
-            <boxGeometry args={[0.24, 2.1, 0.24]} />
-            <meshStandardMaterial color="#8b7355" />
-          </mesh>
-        ))}
+              {trackPiece.supports.map((position, index) => (
+                <mesh key={`upper-support-${trackIdx}-${index}`} position={position}>
+                  <boxGeometry args={[0.24, 2.1, 0.24]} />
+                  <meshStandardMaterial color="#8b7355" />
+                </mesh>
+              ))}
+            </group>
+          );
+        })}
 
         <mesh position={[scene.elevator.exitPoint[0] - 0.45, scene.elevator.exitPoint[1] - 0.03, 0]}>
           <boxGeometry args={[0.9, 0.16, 1.36]} />

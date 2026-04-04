@@ -2,6 +2,14 @@ import type { Phase01ElevatorState } from '@/game-core';
 
 type Vec3 = [number, number, number];
 
+type TrackSegment = {
+  start: Vec3;
+  end: Vec3;
+  center: Vec3;
+  rotation: Vec3;
+  length: number;
+};
+
 type SceneModel = {
   elevator: {
     progress: number;
@@ -11,27 +19,8 @@ type SceneModel = {
     entryPoint: Vec3;
     exitPoint: Vec3;
   };
-  track: {
-    start: Vec3;
-    end: Vec3;
-    center: Vec3;
-    rotation: Vec3;
-    length: number;
-  };
-  lowerTrack: {
-    start: Vec3;
-    end: Vec3;
-    center: Vec3;
-    rotation: Vec3;
-    length: number;
-  };
-  upperTrack: {
-    start: Vec3;
-    end: Vec3;
-    center: Vec3;
-    rotation: Vec3;
-    length: number;
-  };
+  lowerTrack: TrackSegment;
+  upperTracks: TrackSegment[];
   car: {
     position: Vec3;
     rotation: Vec3;
@@ -42,7 +31,7 @@ type SceneModel = {
 const ELEVATOR_BASE_X = -3;
 const ELEVATOR_BASE_Y = 0;
 const ELEVATOR_TRAVEL_Y = 4;
-const TRACK_LENGTH_X = 7.2;
+const UPPER_TRACK_SEGMENT_LENGTH = 5.0;
 const LOWER_TRACK_START_X = -6.3;
 const LOWER_TRACK_START_Y = 0.3;
 
@@ -52,23 +41,41 @@ function lerp(start: number, end: number, progress: number): number {
 
 export function buildPhase01SceneModel(phase: Phase01ElevatorState): SceneModel {
   const elevatorProgress = phase.elevator.position / phase.elevator.maxHeight;
-  const trackAngleRad = -(phase.track.inclinationDeg * Math.PI) / 180;
   const carAnchorOffset: Vec3 = [0.55, 0.3, 0];
 
-  // Derived from elevator exit so the upper track starts exactly where the car lands
+  // Upper track origin is derived from elevator exit (ensures zero-gap handoff)
   const trackStartX = ELEVATOR_BASE_X + carAnchorOffset[0];
   const trackStartY = ELEVATOR_BASE_Y + ELEVATOR_TRAVEL_Y + carAnchorOffset[1];
 
-  const trackEndX = trackStartX + TRACK_LENGTH_X;
-  const trackEndY = trackStartY + Math.tan(trackAngleRad) * TRACK_LENGTH_X;
-  const trackProgress = phase.car.position / 100;
+  // Build one TrackSegment per entry in phase.tracks, chaining start→end
+  let segX = trackStartX;
+  let segY = trackStartY;
+  const upperTracks: TrackSegment[] = phase.tracks.map((trackConfig) => {
+    const angleRad = -(trackConfig.inclinationDeg * Math.PI) / 180;
+    const startX = segX;
+    const startY = segY;
+    const endX = startX + UPPER_TRACK_SEGMENT_LENGTH;
+    const endY = startY + Math.tan(angleRad) * UPPER_TRACK_SEGMENT_LENGTH;
+    segX = endX;
+    segY = endY;
+    return {
+      start: [startX, startY, 0],
+      end: [endX, endY, 0],
+      center: [(startX + endX) / 2, (startY + endY) / 2, 0],
+      rotation: [0, 0, angleRad],
+      length: Math.hypot(endX - startX, endY - startY),
+    };
+  });
+
+  // Elevator rotation aligns with the first track
+  const track0AngleRad = -(phase.tracks[0].inclinationDeg * Math.PI) / 180;
 
   const elevatorPosition: Vec3 = [
     ELEVATOR_BASE_X,
     ELEVATOR_BASE_Y + ELEVATOR_TRAVEL_Y * elevatorProgress,
     0,
   ];
-  const elevatorRotation: Vec3 = [0, 0, trackAngleRad];
+  const elevatorRotation: Vec3 = [0, 0, track0AngleRad];
   const elevatorEntryPoint: Vec3 = [ELEVATOR_BASE_X - 1.15, ELEVATOR_BASE_Y + 0.3, 0];
   const elevatorExitPoint: Vec3 = [trackStartX, trackStartY, 0];
   const lowerTrackEndX = elevatorEntryPoint[0];
@@ -77,17 +84,31 @@ export function buildPhase01SceneModel(phase: Phase01ElevatorState): SceneModel 
   const lowerTrackCenter: Vec3 = [(LOWER_TRACK_START_X + lowerTrackEndX) / 2, LOWER_TRACK_START_Y, 0];
   const lowerTrackLength = Math.abs(lowerTrackEndX - LOWER_TRACK_START_X);
 
+  // Coupled: car sits on elevator platform
   const coupledCarPosition: Vec3 = [
     elevatorPosition[0] + carAnchorOffset[0],
     elevatorPosition[1] + carAnchorOffset[1],
     0.4,
   ];
 
+  // Released: car runs along the appropriate track segment
+  const posPerTrack = 100 / upperTracks.length;
+  let carTrackIndex: number;
+  let carLocalProgress: number;
+  if (phase.car.position >= 100) {
+    carTrackIndex = upperTracks.length - 1;
+    carLocalProgress = 1;
+  } else {
+    carTrackIndex = Math.floor(phase.car.position / posPerTrack);
+    carLocalProgress = (phase.car.position % posPerTrack) / posPerTrack;
+  }
+  const carTrack = upperTracks[carTrackIndex];
   const releasedCarPosition: Vec3 = [
-    lerp(trackStartX, trackEndX, trackProgress),
-    lerp(trackStartY, trackEndY, trackProgress),
+    lerp(carTrack.start[0], carTrack.end[0], carLocalProgress),
+    lerp(carTrack.start[1], carTrack.end[1], carLocalProgress),
     0.4,
   ];
+  const releasedCarRotation: Vec3 = carTrack.rotation;
 
   return {
     elevator: {
@@ -98,13 +119,6 @@ export function buildPhase01SceneModel(phase: Phase01ElevatorState): SceneModel 
       entryPoint: elevatorEntryPoint,
       exitPoint: elevatorExitPoint,
     },
-    track: {
-      start: [trackStartX, trackStartY, 0],
-      end: [trackEndX, trackEndY, 0],
-      center: [(trackStartX + trackEndX) / 2, (trackStartY + trackEndY) / 2, 0],
-      rotation: [0, 0, trackAngleRad],
-      length: Math.hypot(trackEndX - trackStartX, trackEndY - trackStartY),
-    },
     lowerTrack: {
       start: [LOWER_TRACK_START_X, LOWER_TRACK_START_Y, 0],
       end: [lowerTrackEndX, lowerTrackEndY, 0],
@@ -112,16 +126,10 @@ export function buildPhase01SceneModel(phase: Phase01ElevatorState): SceneModel 
       rotation: lowerTrackRotation,
       length: lowerTrackLength,
     },
-    upperTrack: {
-      start: [trackStartX, trackStartY, 0],
-      end: [trackEndX, trackEndY, 0],
-      center: [(trackStartX + trackEndX) / 2, (trackStartY + trackEndY) / 2, 0],
-      rotation: [0, 0, trackAngleRad],
-      length: Math.hypot(trackEndX - trackStartX, trackEndY - trackStartY),
-    },
+    upperTracks,
     car: {
       position: phase.car.isCoupledToElevator ? coupledCarPosition : releasedCarPosition,
-      rotation: phase.car.isCoupledToElevator ? elevatorRotation : [0, 0, trackAngleRad],
+      rotation: phase.car.isCoupledToElevator ? elevatorRotation : releasedCarRotation,
       isCoupledToElevator: phase.car.isCoupledToElevator,
     },
   };

@@ -42,9 +42,9 @@ describe('buildPhase01SceneModel', () => {
     const scene = buildPhase01SceneModel(phase);
 
     expect(scene.car.isCoupledToElevator).toBe(false);
-    expect(scene.car.position[0]).toBeGreaterThan(scene.track.start[0]);
-    expect(scene.car.position[1]).toBeLessThan(scene.track.start[1]);
-    expect(scene.car.rotation[2]).toBeCloseTo(scene.track.rotation[2]);
+    expect(scene.car.position[0]).toBeGreaterThan(scene.upperTracks[0].start[0]);
+    expect(scene.car.position[1]).toBeLessThan(scene.upperTracks[0].start[1]);
+    expect(scene.car.rotation[2]).toBeCloseTo(scene.upperTracks[0].rotation[2]);
   });
 
   it('aligns the elevator exit point with the upper track start at full height', () => {
@@ -56,8 +56,8 @@ describe('buildPhase01SceneModel', () => {
 
     const scene = buildPhase01SceneModel(phase);
 
-    expect(scene.elevator.exitPoint[0]).toBeCloseTo(scene.upperTrack.start[0]);
-    expect(scene.elevator.exitPoint[1]).toBeCloseTo(scene.upperTrack.start[1]);
+    expect(scene.elevator.exitPoint[0]).toBeCloseTo(scene.upperTracks[0].start[0]);
+    expect(scene.elevator.exitPoint[1]).toBeCloseTo(scene.upperTracks[0].start[1]);
   });
 
   it('includes a lower approach track that meets the elevator at the base', () => {
@@ -68,15 +68,15 @@ describe('buildPhase01SceneModel', () => {
     expect(scene.lowerTrack.end[1]).toBeCloseTo(scene.elevator.entryPoint[1]);
   });
 
-  it('maps car progress to the end of the track at 100%', () => {
-    const phase = createPhase01Elevator({ maxHeight: 12, inclinationDeg: 30, maxVelocity: 5, maxTicks: 200 });
+  it('maps car progress to the end of the final track at 100%', () => {
+    const phase = createPhase01Elevator({ maxHeight: 12, tracks: [{ inclinationDeg: 30, maxVelocity: 5 }, { inclinationDeg: 15, maxVelocity: 5 }], maxTicks: 200 });
     phase.car.position = 100;
     phase.car.isCoupledToElevator = false;
 
     const scene = buildPhase01SceneModel(phase);
 
-    expect(scene.car.position[0]).toBeCloseTo(scene.track.end[0]);
-    expect(scene.car.position[1]).toBeCloseTo(scene.track.end[1]);
+    expect(scene.car.position[0]).toBeCloseTo(scene.upperTracks[1].end[0]);
+    expect(scene.car.position[1]).toBeCloseTo(scene.upperTracks[1].end[1]);
   });
 
   it('exit point equals the coupled car anchor when elevator is at max height', () => {
@@ -122,7 +122,26 @@ describe('buildPhase01SceneModel', () => {
 
     const scene = buildPhase01SceneModel(phase);
 
-    expect(scene.car.position[0]).toBeCloseTo(scene.upperTrack.start[0]);
-    expect(scene.car.position[1]).toBeCloseTo(scene.upperTrack.start[1]);
+    expect(scene.car.position[0]).toBeCloseTo(scene.upperTracks[0].start[0]);
+    expect(scene.car.position[1]).toBeCloseTo(scene.upperTracks[0].start[1]);
+  });
+
+  it('upper track 2 starts exactly where upper track 1 ends', () => {
+    const phase = createPhase01Elevator({ maxHeight: 12, tracks: [{ inclinationDeg: 30, maxVelocity: 5 }, { inclinationDeg: 15, maxVelocity: 5 }], maxTicks: 200 });
+    const scene = buildPhase01SceneModel(phase);
+
+    expect(scene.upperTracks[1].start[0]).toBeCloseTo(scene.upperTracks[0].end[0]);
+    expect(scene.upperTracks[1].start[1]).toBeCloseTo(scene.upperTracks[0].end[1]);
+  });
+
+  it('car at position 50 is at the boundary between track 1 and track 2', () => {
+    const phase = createPhase01Elevator({ maxHeight: 12, tracks: [{ inclinationDeg: 30, maxVelocity: 5 }, { inclinationDeg: 15, maxVelocity: 5 }], maxTicks: 200 });
+    phase.car.position = 50;
+    phase.car.isCoupledToElevator = false;
+
+    const scene = buildPhase01SceneModel(phase);
+
+    expect(scene.car.position[0]).toBeCloseTo(scene.upperTracks[0].end[0]);
+    expect(scene.car.position[1]).toBeCloseTo(scene.upperTracks[0].end[1]);
   });
 });
