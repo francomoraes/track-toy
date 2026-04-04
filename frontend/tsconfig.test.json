@@ -8,5 +8,5 @@
     "isolatedModules": true,
     "noEmit": true
   },
-  "include": ["src/game-core/**/*.ts"]
+  "include": ["src/**/*.ts", "src/**/*.tsx"]
 }
