@@ -6,7 +6,12 @@
     "moduleResolution": "node",
     "lib": ["ES2022"],
     "isolatedModules": true,
-    "noEmit": true
+    "noEmit": true,
+    "types": ["jest"],
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"]
+    }
   },
   "include": ["src/**/*.ts", "src/**/*.tsx"]
 }
