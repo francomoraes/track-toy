@@ -110,10 +110,6 @@ export function buildPhase02SceneModel(phase: Phase02State): Phase02SceneModel {
     length: lowerTrackLength,
   };
 
-  // Switch position: at track1 end
-  // (kept as local variable for layout reference, not exposed in model)
-  const _switchPosition: Vec3 = track1.end;
-
   // Car position
   let carPosition: Vec3;
   let carRotation: Vec3;

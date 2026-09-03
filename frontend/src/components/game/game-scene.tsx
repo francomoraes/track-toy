@@ -2,84 +2,16 @@
 
 import { Environment, OrbitControls, PerspectiveCamera, RoundedBox } from '@react-three/drei';
 import { Canvas, useFrame } from '@react-three/fiber';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useMemo, useRef } from 'react';
 
 import { useGameStore } from '@/store/game-store';
 
 import { advanceTickAccumulator } from './frame-ticker';
+import { LeverButton } from './lever-button';
 import { buildPhase01PieceModel } from './piece-model';
 import { buildPhase01SceneModel } from './scene-model';
 
 const TICK_SECONDS = 0.12;
-
-type LeverButtonProps = {
-  label: string;
-  color: string;
-  onHold: () => void;
-  onRelease: () => void;
-};
-
-function LeverButton({ label, color, onHold, onRelease }: LeverButtonProps) {
-  const [held, setHeld] = useState(false);
-  const releaseRef = useRef(onRelease);
-  useEffect(() => { releaseRef.current = onRelease; });
-
-  useEffect(() => {
-    if (!held) return;
-    const up = () => { setHeld(false); releaseRef.current(); };
-    window.addEventListener('pointerup', up, { once: true });
-    return () => window.removeEventListener('pointerup', up);
-  }, [held]);
-
-  return (
-    <div className="flex select-none flex-col items-center gap-2 touch-none">
-      <div
-        className="relative h-20 w-14 cursor-pointer"
-        onPointerDown={(e) => { e.preventDefault(); setHeld(true); onHold(); }}
-      >
-        {/* Housing bracket */}
-        <div
-          className="absolute bottom-0 left-1/2 h-6 w-11 -translate-x-1/2 rounded-t"
-          style={{ background: 'linear-gradient(to bottom, #3a3530, #1e1b17)', border: '1px solid rgba(255,255,255,0.07)' }}
-        />
-        {/* Slot groove */}
-        <div
-          className="absolute bottom-4 left-1/2 top-0 w-1.5 -translate-x-1/2 rounded-full"
-          style={{ background: 'rgba(0,0,0,0.55)', boxShadow: 'inset 0 1px 4px rgba(0,0,0,0.9)' }}
-        />
-        {/* Lever arm */}
-        <div
-          className="absolute bottom-4 left-1/2 rounded-full"
-          style={{
-            width: 7,
-            height: 52,
-            background: `linear-gradient(to right, ${color}bb, ${color}, ${color}bb)`,
-            transformOrigin: 'bottom center',
-            transform: `translateX(-50%) rotate(${held ? -22 : 20}deg)`,
-            transition: 'transform 0.12s ease-out',
-            boxShadow: held ? `0 0 12px ${color}, 0 0 24px ${color}55` : `0 0 4px ${color}44`,
-          }}
-        >
-          {/* Knob */}
-          <div
-            className="absolute -top-2 left-1/2 h-6 w-6 -translate-x-1/2 rounded-full"
-            style={{
-              background: `radial-gradient(circle at 35% 35%, white, ${color})`,
-              border: '1px solid rgba(255,255,255,0.2)',
-              boxShadow: held ? `0 0 10px ${color}, 0 0 22px ${color}55` : `0 0 6px ${color}66`,
-            }}
-          />
-        </div>
-      </div>
-      <span
-        className="text-[9px] font-bold uppercase tracking-[0.15em]"
-        style={{ color: held ? 'rgba(255,255,255,0.9)' : 'rgba(255,255,255,0.4)' }}
-      >
-        {label}
-      </span>
-    </div>
-  );
-}
 
 function SceneTicker() {
   const tick = useGameStore((state) => state.tick);
@@ -318,6 +250,7 @@ export function GameScene({ onReset, onGoToMap }: GameSceneProps) {
         <LeverButton
           label="Elevar"
           color="#22c55e"
+          keyBinding="Space"
           onHold={() => setHeldAction('raise')}
           onRelease={() => setHeldAction('none')}
         />

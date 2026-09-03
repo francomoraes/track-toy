@@ -2,72 +2,15 @@
 
 import { Environment, OrbitControls, PerspectiveCamera, RoundedBox } from '@react-three/drei';
 import { Canvas, useFrame } from '@react-three/fiber';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useMemo, useRef } from 'react';
 
 import { usePhase02Store } from '@/store/game-store-phase02';
 
 import { advanceTickAccumulator } from './frame-ticker';
+import { LeverButton } from './lever-button';
 import { buildPhase02SceneModel } from './scene-model-phase02';
 
 const TICK_SECONDS = 0.12;
-
-type LeverButtonProps = {
-  label: string;
-  color: string;
-  onHold: () => void;
-  onRelease: () => void;
-};
-
-function LeverButton({ label, color, onHold, onRelease }: LeverButtonProps) {
-  const [held, setHeld] = useState(false);
-  const releaseRef = useRef(onRelease);
-  useEffect(() => { releaseRef.current = onRelease; });
-
-  useEffect(() => {
-    if (!held) return;
-    const up = () => { setHeld(false); releaseRef.current(); };
-    window.addEventListener('pointerup', up, { once: true });
-    return () => window.removeEventListener('pointerup', up);
-  }, [held]);
-
-  return (
-    <div className="flex select-none flex-col items-center gap-2 touch-none">
-      <div
-        className="relative h-20 w-14 cursor-pointer"
-        onPointerDown={(e) => { e.preventDefault(); setHeld(true); onHold(); }}
-      >
-        <div className="absolute bottom-2 left-1/2 top-1 w-2 -translate-x-1/2 rounded-full bg-zinc-800" />
-        <div
-          className="absolute bottom-3 left-1/2 rounded-full"
-          style={{
-            width: 8,
-            height: 58,
-            backgroundColor: color,
-            transformOrigin: 'bottom center',
-            transform: `translateX(-50%) rotate(${held ? -22 : 20}deg)`,
-            transition: 'transform 0.12s ease-out',
-            boxShadow: held ? `0 0 14px ${color}` : `0 0 0px ${color}00`,
-          }}
-        >
-          <div
-            className="absolute -top-1 left-1/2 h-5 w-5 -translate-x-1/2 rounded-full border border-white/20"
-            style={{
-              backgroundColor: color,
-              filter: 'brightness(1.5)',
-              boxShadow: held ? `0 0 8px ${color}` : 'none',
-            }}
-          />
-        </div>
-      </div>
-      <span
-        className="text-[9px] font-bold uppercase tracking-[0.15em]"
-        style={{ color: 'rgba(255,255,255,0.5)' }}
-      >
-        {label}
-      </span>
-    </div>
-  );
-}
 
 function SceneTicker02() {
   const tick = usePhase02Store((state) => state.tick);
@@ -233,12 +176,14 @@ export function GameScenePhase02({ onReset, onGoToMap }: GameScenePhase02Props) 
         <LeverButton
           label="Elevar A"
           color="#3b82f6"
+          keyBinding="KeyA"
           onHold={() => setHeldAction('raise_a')}
           onRelease={() => setHeldAction('none')}
         />
         <LeverButton
           label="Elevar B"
           color="#a855f7"
+          keyBinding="KeyL"
           onHold={() => setHeldAction('raise_b')}
           onRelease={() => setHeldAction('none')}
         />
